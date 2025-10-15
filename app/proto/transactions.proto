@@ -1,0 +1,17 @@
+syntax = "proto3";
+package teleconnect;
+
+// A single transaction record
+message Transaction {
+  string record_id = 1;
+  string name = 2;
+  double amount = 3;
+  string currency = 4;
+  string timestamp = 5;
+}
+
+// A batch of transactions: field 1 is batch name; field 2 is repeated transactions
+message TransactionBatch {
+  string batch_name = 1;
+  repeated Transaction transactions = 2;
+}
