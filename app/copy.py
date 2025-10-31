@@ -1,7 +1,15 @@
-#check message names in pb
+#check message names for invoice_summary_pb2.py and bill_info_pb2.py:
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.invoice_summary_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.bill_info_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
+
+
+#check message names for invoice_pb2.py in proto
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.invoice_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
+
+#check message names for statements_root_pb2.py in proto
 python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.statements_root_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
 
-#check message names in all pb
+#check message names in all proto
 python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.billdata_root_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
 
 ## src/processor/parse_pb_file.py
