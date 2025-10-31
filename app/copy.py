@@ -1,3 +1,7 @@
+#verify command
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.billdata_root_pb2 as m; print('OK', hasattr(m, 'BillData'))"
+
+
 # scripts/compile_protos.py
 import sys
 from pathlib import Path
