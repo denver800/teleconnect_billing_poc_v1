@@ -1,48 +1,28 @@
-# src/processor/parser.py
-import os
+# scripts/compile_protos.py
 import sys
 from pathlib import Path
-from google.protobuf.json_format import MessageToJson
+from grpc_tools import protoc
+import grpc_tools  # for the include dir
 
-ROOT_DIR = Path(__file__).resolve().parents[2]
-PROTO_GEN = ROOT_DIR / "src" / "proto_generated"
+ROOT = Path(__file__).resolve().parents[1]
+PROTO_SRC = ROOT / "src" / "proto"
+OUT = ROOT / "src" / "proto_generated"
 
-# Append (do NOT insert at index 0), so we don't shadow google.protobuf
-if str(PROTO_GEN) not in sys.path:
-    sys.path.append(str(PROTO_GEN))
+# grpc_tools ships the well-known types here:
+GRPC_TOOLS_INCLUDE = Path(grpc_tools.__file__).parent / "_proto"
 
-from apis.billdata.v2025_2_0 import billdata_root_pb2  # now resolves cleanly
+proto_files = [str(p) for p in PROTO_SRC.rglob("*.proto")]
+OUT.mkdir(parents=True, exist_ok=True)
 
-def parse_pb_file(file_path: str | None = None) -> str | None:
-    # default to your sample file
-    if not file_path:
-        project_root = os.getcwd()
-        file_path = os.path.join(project_root, "local", "incoming", "GF32.pb")
+args = [
+    "protoc",
+    f"-I={PROTO_SRC}",
+    f"-I={GRPC_TOOLS_INCLUDE}",
+    f"--python_out={OUT}",
+    f"--grpc_python_out={OUT}",
+]
 
-    if not os.path.exists(file_path):
-        print(f"❌ File not found: {file_path}")
-        return None
-
-    base_dir = os.path.dirname(file_path)
-    file_name = os.path.splitext(os.path.basename(file_path))[0]
-    output_file = os.path.join(base_dir, f"{file_name}.json")
-
-    try:
-        message = billdata_root_pb2.BillData()
-        with open(file_path, "rb") as f:
-            message.ParseFromString(f.read())
-
-        json_output = MessageToJson(message, indent=2)
-
-        with open(output_file, "w", encoding="utf-8") as out_file:
-            out_file.write(json_output)
-
-        print(f"✅ Parsed {file_path} → {output_file}")
-        return output_file
-
-    except Exception as e:
-        print(f"❌ Error parsing {file_path}: {e}")
-        return None
-
-if __name__ == "__main__":
-    parse_pb_file()
+ret = protoc.main(args + proto_files)
+if ret != 0:
+    raise SystemExit(f"protoc failed with exit code {ret}")
+print(f"Generated {len(proto_files)} files into {OUT}")
