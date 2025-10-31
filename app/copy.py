@@ -1,5 +1,10 @@
+#check message names in pb
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.statements_root_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
+
+#check message names in all pb
+python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.billdata_root_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
+
 ## src/processor/parse_pb_file.py
-# src/processor/parse_pb_file.py
 import sys, os
 from pathlib import Path
 from google.protobuf.json_format import MessageToJson
