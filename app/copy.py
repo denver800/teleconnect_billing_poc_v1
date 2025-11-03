@@ -1,3 +1,24 @@
+#src.processor.parse_pb_file.py new method:
+def register_file_in_db(pb_path: str, json_path: str) -> None:
+    """Create/update a Files row with both the original .pb and the generated .json."""
+    pb_name = Path(pb_path).name
+    json_name = Path(json_path).name
+
+    with SessionLocal() as s:
+        row = s.query(Files).filter(Files.file_name == pb_name).first()
+        if row:
+            row.json_file_name = json_name
+            row.status = FileStatus.new
+            print(f"🔁 Updated DB: {pb_name} → json={json_name}, status=new")
+        else:
+            s.add(Files(
+                file_name=pb_name,
+                json_file_name=json_name,
+                status=FileStatus.new
+            ))
+            print(f"✅ Inserted DB: {pb_name} with json={json_name}, status=new")
+        s.commit()
+
 #process_incoming.py
 import json
 from pathlib import Path
