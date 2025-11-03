@@ -1,3 +1,59 @@
+#process_incoming.py
+import json
+from pathlib import Path
+from sqlalchemy.orm import Session
+
+from src.db.db_utils import engine, SessionLocal
+from src.db.models import Files, Records, FileStatus, RecordStatus
+
+INCOMING_DIR = Path("local/incoming")  # adjust if you use runtime/incoming
+
+def process_incoming_files():
+    with SessionLocal() as session:
+        # 1️⃣ Get all files with status "new"
+        new_files = session.query(Files).filter(Files.status == FileStatus.new).all()
+
+        if not new_files:
+            print("No new files to process.")
+            return
+
+        for file_entry in new_files:
+            file_path = INCOMING_DIR / file_entry.file_name
+
+            if not file_path.exists():
+                print(f"⚠️ File {file_entry.file_name} not found in {INCOMING_DIR}")
+                continue
+
+            print(f"🔄 Processing file: {file_entry.file_name}")
+
+            try:
+                # 2️⃣ Read JSON content
+                with open(file_path, "r", encoding="utf-8") as f:
+                    json_data = json.load(f)
+
+                # 3️⃣ Insert record into records table
+                record = Records(
+                    file_id=file_entry.id,
+                    record_data=json_data,
+                    status=RecordStatus.new
+                )
+                session.add(record)
+
+                # 4️⃣ Update file status to 'processing'
+                file_entry.status = FileStatus.processing
+
+                # 5️⃣ Commit transaction
+                session.commit()
+                print(f"✅ Inserted record for {file_entry.file_name} and marked as processing.")
+
+            except Exception as e:
+                session.rollback()
+                print(f"❌ Error processing {file_entry.file_name}: {e}")
+
+if __name__ == "__main__":
+    process_incoming_files()
+
+
 #check message names for invoice_summary_pb2.py and bill_info_pb2.py:
 python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.invoice_summary_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
 python -c "import sys; from pathlib import Path; sys.path.insert(0, str(Path('src/proto_generated').resolve())); import apis.billdata.v2025_2_0.bill_info_pb2 as m; print([n for n in dir(m) if not n.startswith('_')])"
