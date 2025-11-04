@@ -1,3 +1,41 @@
+#add_new_pair
+def add_new_pair(pb_name: str, control_name: str):
+    """
+    Add a new PB + control file pair to the Files table.
+    Returns (file_id, is_new) where:
+      - is_new = True if newly inserted
+      - is_new = False if already existed
+    """
+    session = SessionLocal()
+    try:
+        # 1️⃣ Check if this PB file already exists
+        existing_file = session.query(Files).filter(Files.file_name == pb_name).first()
+        if existing_file:
+            print(f"Pair for '{pb_name}' already exists in DB.")
+            return existing_file.id, False
+
+        # 2️⃣ Create a new Files record
+        new_file = Files(
+            file_name=pb_name,
+            control_file_name=control_name,
+            status=FileStatus.new,
+            created_at=datetime.utcnow()
+        )
+        session.add(new_file)
+        session.commit()
+
+        print(f"✅ Added new pair: PB='{pb_name}', Control='{control_name}' with status 'new'")
+        return new_file.id, True
+
+    except Exception as e:
+        print(f"❌ Error adding pair ({pb_name}, {control_name}):", str(e))
+        session.rollback()
+        return None, False
+
+    finally:
+        session.close()
+
+
 #src.processor.parse_pb_file.py new method:
 def register_file_in_db(pb_path: str, json_path: str) -> None:
     """Create/update a Files row with both the original .pb and the generated .json."""
