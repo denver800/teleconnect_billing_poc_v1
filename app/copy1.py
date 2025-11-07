@@ -1,3 +1,179 @@
+#submit custmoer invoice payload
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Header>
+    <wd:Workday_Common_Header xmlns:wd="urn:com.workday/bsvc">
+      <wd:Include_Reference_Descriptors_In_Response>true</wd:Include_Reference_Descriptors_In_Response>
+    </wd:Workday_Common_Header>
+  </soap:Header>
+  <soap:Body>
+    <wd:Submit_Customer_Invoice_Request xmlns:wd="urn:com.workday/bsvc" wd:Add_Only="true" wd:version="v44.2">
+      <wd:Business_Process_Parameters>
+        <wd:Auto_Complete>true</wd:Auto_Complete>
+        <wd:Comment_Data>
+          <wd:Comment>string</wd:Comment>
+        </wd:Comment_Data>
+      </wd:Business_Process_Parameters>
+      <wd:Customer_Invoice_Data>
+        <wd:Submit>true</wd:Submit>
+        <wd:Locked_in_Workday>true</wd:Locked_in_Workday>
+
+        <wd:Company_Reference wd:Descriptor="?">
+          <wd:ID wd:type="Company_Reference_ID">Co_100</wd:ID>
+        </wd:Company_Reference>
+
+        <wd:Currency_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Currency_ID">CAD</wd:ID>
+        </wd:Currency_Reference>
+
+        <wd:Customer_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Customer_ID">CUST-000373</wd:ID>
+        </wd:Customer_Reference>
+
+        <wd:Sold_To_Customer_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Customer_ID">CUST-000373</wd:ID>
+        </wd:Sold_To_Customer_Reference>
+
+        <wd:Bill_To_Address_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Address_ID">ADDRESS_REFERENCE-6-3660</wd:ID>
+        </wd:Bill_To_Address_Reference>
+
+        <wd:Bill_To_Contact_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Business_Entity_Contact_ID">CON_1990</wd:ID>
+        </wd:Bill_To_Contact_Reference>
+
+        <wd:Delivery_Type_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Document_Delivery_Type_ID">DOCUMENT_DELIVERY_TYPE-3-1</wd:ID>
+        </wd:Delivery_Type_Reference>
+
+        <wd:Delivery_Type_Origin_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Interest_and_Late_Fee_Rule_Origination_Source_ID">CUSTOMER</wd:ID>
+        </wd:Delivery_Type_Origin_Reference>
+
+        <wd:Accounting_Date>2025-08-29Z</wd:Accounting_Date>
+        <wd:From_Date>2025-08-29Z</wd:From_Date>
+        <wd:To_Date>2025-08-29Z</wd:To_Date>
+        <wd:Due_Date_Override>2025-08-29Z</wd:Due_Date_Override>
+
+        <wd:Payment_Terms_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Payment_Terms_ID">Net_37</wd:ID>
+        </wd:Payment_Terms_Reference>
+
+        <wd:Payment_Type_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Payment_Type_ID">PAYMENT_TYPE-3-21</wd:ID>
+        </wd:Payment_Type_Reference>
+
+        <wd:Amount_Due>2170.95</wd:Amount_Due>
+
+        <wd:Customer_Invoice_Type_Reference wd:Descriptor="string">
+          <wd:ID wd:type="Customer_Invoice_Type_ID">Telesat_Canada</wd:ID>
+        </wd:Customer_Invoice_Type_Reference>
+
+        <wd:Customer_PO_Number>Contract# 3445-4</wd:Customer_PO_Number>
+        <wd:Finance_Charge>false</wd:Finance_Charge>
+        <wd:On_Hold>false</wd:On_Hold>
+        <wd:Is_Excluded_from_Dunning_Letter>false</wd:Is_Excluded_from_Dunning_Letter>
+        <wd:Memo>string</wd:Memo>
+
+        <wd:Customer_Invoice_Line_Replacement_Data>
+          <wd:Line_Order>00000001</wd:Line_Order>
+
+          <wd:Intercompany_Affiliate_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Company_Reference_ID">Co_100</wd:ID>
+          </wd:Intercompany_Affiliate_Reference>
+
+          <wd:Revenue_Category_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Revenue_Category_ID">RC_Broadcast_Service_Revenue_-_Levy_Eligible</wd:ID>
+          </wd:Revenue_Category_Reference>
+
+          <wd:Line_Item_Description>Telesat Contract 3445-4
+Monthly charge associated with the provision of 200 KHz Ku-band partial RF channel space segment.</wd:Line_Item_Description>
+
+          <wd:Tax_Applicability_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Tax_Applicability_ID">TA_CA_GSTHST</wd:ID>
+          </wd:Tax_Applicability_Reference>
+
+          <wd:Tax_Code_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Tax_Code_ID">TC_CAN_ONT_LEVY_BROADCAST</wd:ID>
+          </wd:Tax_Code_Reference>
+
+          <wd:Quantity>0.2</wd:Quantity>
+
+          <wd:Unit_of_Measure_Reference wd:Descriptor="string">
+            <wd:ID wd:type="UN_CEFACI_Common_Code_ID">MHZ</wd:ID>
+          </wd:Unit_of_Measure_Reference>
+
+          <wd:Quantity_2>1</wd:Quantity_2>
+
+          <wd:Unit_of_Measure_2_Reference wd:Descriptor="string">
+            <wd:ID wd:type="UN_CEFACI_Common_Code_ID">MON</wd:ID>
+          </wd:Unit_of_Measure_2_Reference>
+
+          <wd:Unit_Cost>10790</wd:Unit_Cost>
+          <wd:From_Date>2025-08-29Z</wd:From_Date>
+          <wd:To_Date>2025-08-29Z</wd:To_Date>
+          <wd:Extended_Amount>2158</wd:Extended_Amount>
+          <wd:Deferred_Revenue>false</wd:Deferred_Revenue>
+          <wd:Memo>string</wd:Memo>
+
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Organization_Reference_ID">APP_Distribution</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Organization_Reference_ID">PRD_FT</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Organization_Reference_ID">RE_Canada</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Organization_Reference_ID">3rdParty</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Location_ID">LOC_ZBCK</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Custom_Worktag_1_ID">REP</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Custom_Worktag_3_ID">NA</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Custom_Worktag_5_ID">CF_Cash_transaction</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Custom_Worktag_2_ID">KUK</wd:ID>
+          </wd:Worktags_Reference>
+          <wd:Worktags_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Custom_Worktag_4_ID">BIT_RENEWAL</wd:ID>
+          </wd:Worktags_Reference>
+        </wd:Customer_Invoice_Line_Replacement_Data>
+
+        <wd:Tax_Code_Data>
+          <wd:Tax_Applicability_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Tax_Applicability_ID">TA_CA_GSTHST</wd:ID>
+          </wd:Tax_Applicability_Reference>
+          <wd:Tax_Code_Reference wd:Descriptor="string">
+            <wd:ID wd:type="Tax_Code_ID">TC_CAN_ONT_LEVY_BROADCAST</wd:ID>
+          </wd:Tax_Code_Reference>
+          <wd:Tax_Amount>12.95</wd:Tax_Amount>
+
+          <wd:Tax_Rate_Data>
+            <wd:Tax_Rate_Reference wd:Descriptor="string">
+              <wd:ID wd:type="Tax_Rate_ID">TR_CAN_LEVY_BROADCAST</wd:ID>
+            </wd:Tax_Rate_Reference>
+            <wd:Tax_Amount>12.95</wd:Tax_Amount>
+            <wd:Tax_Point_Date_Type_Reference wd:Descriptor="string">
+              <wd:ID wd:type="Tax_Point_Date_Type_ID">INVOICE/ADJUSTMENT_DATE</wd:ID>
+            </wd:Tax_Point_Date_Type_Reference>
+            <wd:Tax_Point_Date>2025-08-29Z</wd:Tax_Point_Date>
+          </wd:Tax_Rate_Data>
+        </wd:Tax_Code_Data>
+      </wd:Customer_Invoice_Data>
+    </wd:Submit_Customer_Invoice_Request>
+  </soap:Body>
+</soap:Envelope>
+
+
 #josn_to_workday.py
 from datetime import datetime
 from typing import Any, Dict, Tuple, List, Optional
