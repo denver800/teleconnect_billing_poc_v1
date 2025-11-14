@@ -1,3 +1,271 @@
+#test_workday_soap.py:
+from zeep import Client
+from zeep.transports import Transport
+import requests
+import logging
+import base64
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("zeep.transports").setLevel(logging.DEBUG)
+
+WSDL_URL = "<your WSDL URL here>"  # same as you use now
+
+CLIENT_ID = "<client id>"
+CLIENT_SECRET = "<client secret>"
+TOKEN_URL = "<token url>"
+REFRESH_TOKEN = "<refresh token>"
+
+
+def get_token() -> str:
+    # Encode client_id:client_secret in Base64
+    creds = f"{CLIENT_ID}:{CLIENT_SECRET}"
+    encoded_creds = base64.b64encode(creds.encode()).decode()
+
+    print("CREDS !!!", creds)
+    print("ENCODED CREDS!!!", encoded_creds)
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": f"Basic {encoded_creds}",
+    }
+
+    data = {
+        "grant_type": "refresh_token",
+        "refresh_token": REFRESH_TOKEN,
+    }
+
+    resp = requests.post(TOKEN_URL, headers=headers, data=data, verify=False)
+    print("Status:", resp.status_code)
+    print("Response:", resp.text)
+    resp.raise_for_status()
+
+    token = resp.json()["access_token"]
+    print("✅ Got token successfully")
+    return token
+
+
+def call_workday():
+    # ---------- auth + zeep client ----------
+    token = get_token()
+    session = requests.Session()
+    session.headers.update({"Authorization": f"Bearer {token}"})
+    session.verify = False
+
+    transport = Transport(session=session)
+    client = Client(WSDL_URL, transport=transport)
+
+    print("✅ Connected to Workday SOAP service!")
+
+    # ---------- payload built from your working XML ----------
+    invoice_data = {
+        "Company_Reference": {
+            "ID": [
+                {"type": "Company_Reference_ID", "_value_1": "Co_100"},
+            ]
+        },
+        "Currency_Reference": {
+            "ID": [
+                {"type": "Currency_ID", "_value_1": "CAD"},
+            ]
+        },
+        "Customer_Reference": {
+            "ID": [
+                {"type": "Customer_ID", "_value_1": "CUST-000193"},
+            ]
+        },
+        "Bill_To_Contact_Reference": {
+            "ID": [
+                {
+                    "type": "Business_Entity_Contact_ID",
+                    "_value_1": "CON_12581",
+                },
+            ]
+        },
+        "Invoice_Date": "2025-08-29",
+        "Accounting_Date": "2025-08-29",
+        "From_Date": "2025-08-29",
+        "To_Date": "2025-08-29",
+        "Memo": "Invoice from Netcracker NRM",
+        "Customer_Invoice_Line_Replacement_Data": [
+            {
+                "Intercompany_Affiliate_Reference": {
+                    "ID": [
+                        {
+                            "type": "Company_Reference_ID",
+                            "_value_1": "Co_100",
+                        }
+                    ]
+                },
+                "Line_Item_Description": (
+                    "Telesat Contract 3445-4 Monthly charge associated with the "
+                    "provision of 200 KHz Ku-band partial Rf channel space segment."
+                ),
+                "Tax_Applicability_Reference": {
+                    "ID": [
+                        {
+                            "type": "Tax_Applicability_ID",
+                            "_value_1": "TA_CA_GSTHST",
+                        }
+                    ]
+                },
+                "Tax_Code_Reference": {
+                    "ID": [
+                        {
+                            "type": "Tax_Code_ID",
+                            "_value_1": "TC_CAN_ONT_LEVY_BROADCAST",
+                        }
+                    ]
+                },
+                "Quantity": 2,
+                "Unit_of_Measure_Reference": {
+                    "ID": [
+                        {
+                            "type": "UN_CEFACT_Common_Code_ID",
+                            "_value_1": "MHZ",
+                        }
+                    ]
+                },
+                "Quantity_2": 1,
+                "Unit_of_Measure_2_Reference": {
+                    "ID": [
+                        {
+                            "type": "UN_CEFACT_Common_Code_ID",
+                            "_value_1": "MON",
+                        }
+                    ]
+                },
+                "From_Date": "2025-08-29",
+                "To_Date": "2025-08-29",
+                "Extended_Amount": 2158,
+                "Worktags_Reference": [
+                    {
+                        "ID": [
+                            {
+                                "type": "Organization_Reference_ID",
+                                "_value_1": "APP_Distribution",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Organization_Reference_ID",
+                                "_value_1": "PRD_FT",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Organization_Reference_ID",
+                                "_value_1": "RE_Canada",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Organization_Reference_ID",
+                                "_value_1": "3rdParty",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Custom_Worktag_1_ID",
+                                "_value_1": "REP",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Custom_Worktag_3_ID",
+                                "_value_1": "NA",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Custom_Worktag_5_ID",
+                                "_value_1": "CF_Cash_transaction",
+                            }
+                        ]
+                    },
+                    {
+                        "ID": [
+                            {
+                                "type": "Custom_Worktag_4_ID",
+                                "_value_1": "BT_RENEWAL",
+                            }
+                        ]
+                    },
+                ],
+                "Customer_Contract_Line_Reference": {
+                    "ID": [
+                        {
+                            "type": "Receivable_Contract_Line_Reference_ID",
+                            "_value_1": "CUSTOMER_CONTRACT_LINE-9-56712",
+                        }
+                    ]
+                },
+            }
+        ],
+        "Tax_Code_Data": [
+            {
+                "Tax_Applicability_Reference": {
+                    "ID": [
+                        {
+                            "type": "Tax_Applicability_ID",
+                            "_value_1": "TA_CA_GSTHST",
+                        }
+                    ]
+                },
+                "Tax_Code_Reference": {
+                    "ID": [
+                        {
+                            "type": "Tax_Code_ID",
+                            "_value_1": "TC_CAN_ONT_LEVY_BROADCAST",
+                        }
+                    ]
+                },
+                "Tax_Rate_Data": [
+                    {
+                        "Tax_Rate_Reference": {
+                            "ID": [
+                                {
+                                    "type": "Tax_Rate_ID",
+                                    "_value_1": "TR_CAN_LEVY_BROADCAST",
+                                }
+                            ]
+                        }
+                    }
+                ],
+            }
+        ],
+    }
+
+    # Optional – have Workday auto-complete the invoice
+    business_process_parameters = {
+        "Auto_Complete": True,
+    }
+
+    try:
+        response = client.service.Submit_Customer_Invoice(
+            Business_Process_Parameters=business_process_parameters,
+            Customer_Invoice_Data=invoice_data,
+        )
+        print("Response:", response)
+    except Exception as e:
+        print("❌ Error calling Workday SOAP:", str(e))
+
+
+if __name__ == "__main__":
+    call_workday()
+
+
 #submit custmoer invoice payload
 <?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
