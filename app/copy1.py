@@ -1,3 +1,20 @@
+#record processor:
+from src.db.db_utils import session_scope
+from src.db.models import Records, RecordStatus
+
+
+def fetch_new_records():
+    """
+    Returns a list of records with status = 'new'
+    """
+    with session_scope() as session:
+        new_records = session.query(Records).filter(
+            Records.status == RecordStatus.new
+        ).all()
+
+        return new_records
+
+
 #test_workday_soap.py:
 from zeep import Client
 from zeep.transports import Transport
